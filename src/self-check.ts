@@ -91,7 +91,7 @@ tQIDAQAB
                 "Cache-Control": "no-cache",
                 "Connection": "keep-alive",
                 "Content-type": "application/json; Charset=UTF-8",
-                "Host": "goehcs.eduro.go.kr",
+                "Host": this.url[this.region].replace('https://', ''),
                 "Origin": "https://hcs.eduro.go.kr",
                 "Pragma": "no-cache",
                 "Referer": "https://hcs.eduro.go.kr/",
