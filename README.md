@@ -1,7 +1,7 @@
 # self-check - 교육부 자가진단 자동화 라이브러리
 [![TypeScript](https://img.shields.io/badge/Built%20with-Typescript-informational?logo=typescript)](https://www.typescriptlang.org/)
 [![Passed](https://img.shields.io/badge/Build-Passed-success)](#)
-[![License](https://img.shields.io/github/license/pinmilk/nodepapago)](./LICENSE)
+[![License](https://img.shields.io/github/license/pinmilk/self-check)](./LICENSE)
 - Note: It can stop working anytime.
 - 전달: 이 프로그램은 언제든지 작동을 멈출 수 있습니다.
       이 앱을 사용하기 전, 반드시 자신의 건강 상태를 확인하고 실행해 주세요.
@@ -13,7 +13,7 @@
 - 원래 기존 사이트에 대한 자가진단 자동화 스크립트는 있었으나 자가진단 사이트가 바뀌게 되었어요! 그래서 이렇게 새로 만들게 되었습니다.
 ## 사용법
 
-### 1. git clone https://github.com/PinMilk/self-check
+### 1. 저장소 복제
 ```bash
 git clone https://github.com/PinMilk/self-check
 ```
