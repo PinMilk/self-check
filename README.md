@@ -1,7 +1,7 @@
 # self-check - 교육부 자가진단 자동화 라이브러리
 [![TypeScript](https://img.shields.io/badge/Built%20with-Typescript-informational?logo=typescript)](https://www.typescriptlang.org/)
 [![Passed](https://img.shields.io/badge/Build-Passed-success)](#)
-
+[![License](https://img.shields.io/github/license/pinmilk/nodepapago)](./LICENSE)
 - Note: It can stop working anytime.
 - 전달: 이 프로그램은 언제든지 작동을 멈출 수 있습니다.
       이 앱을 사용하기 전, 반드시 자신의 건강 상태를 확인하고 실행해 주세요.
@@ -93,3 +93,5 @@ tsc --init
 
 ### 2. 학교급
 `유치원, 초등학교, 중학교, 고등학교, 특수학교` 중 선택
+## License
+nodepapago is following MIT License.
