@@ -94,4 +94,4 @@ tsc --init
 ### 2. 학교급
 `유치원, 초등학교, 중학교, 고등학교, 특수학교` 중 선택
 ## License
-nodepapago is following MIT License.
+self-check is following MIT License.
