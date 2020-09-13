@@ -1,3 +1,4 @@
 test.ts
 *.js
 package-lock.json
+auto-self-check.*
