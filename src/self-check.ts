@@ -73,14 +73,14 @@ tQIDAQAB
         return result;
     }
 
-    private async getSchoolCode(name: string, region: string, kind: string) {
-        const result: string = (await new SchoolFinder().getCode(name, region, kind));
+    private async getSchoolCode() {
+        const result: string = (await new SchoolFinder(this.school, this.region, this.kind).getCode());
         return result;
     }
 
     private async login() {
         const token: string = (await Axios.post(`${this.url[this.region]}${this.url.path[0]}`, {
-            "orgcode": await this.getSchoolCode(this.school, this.region, this.kind),
+            "orgcode": await this.getSchoolCode(),
             "name": this.encrypt(Buffer.from(this.name).toString("binary")),
             "birthday": this.encrypt(this.birthday)
         }, {
@@ -91,7 +91,6 @@ tQIDAQAB
                 "Cache-Control": "no-cache",
                 "Connection": "keep-alive",
                 "Content-type": "application/json; Charset=UTF-8",
-                "Host": this.url[this.region].replace("https://", ""),
                 "Origin": "https://hcs.eduro.go.kr",
                 "Pragma": "no-cache",
                 "Referer": "https://hcs.eduro.go.kr/",
@@ -132,11 +131,10 @@ tQIDAQAB
                 "Accept": "application/json, text/plain, */*",
                 "Accept-Encoding": "gzip, deflate, br",
                 "Accept-Language": "en-GB,en;q=0.9,ko-KR;q=0.8,ko;q=0.7,ja-JP;q=0.6,ja;q=0.5,zh-TW;q=0.4,zh;q=0.3,en-US;q=0.2",
-                "Authorization": this.login(),
+                "Authorization": await this.login(),
                 "Cache-Control": "no-cache",
                 "Connection": "keep-alive",
                 "Content-type": "application/json; Charset=UTF-8",
-                "Host": this.url[this.region].replace("https://", ""),
                 "Origin": "https://hcs.eduro.go.kr",
                 "Pragma": "no-cache",
                 "Referer": "https://hcs.eduro.go.kr/",

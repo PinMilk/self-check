@@ -1,10 +1,16 @@
 import Axios from 'axios';
 
 export class SchoolFinder {
-    private schoolCode: any;
-    private schoolKind: any;
+    protected name: string;
+    protected region: string;
+    protected kind: string;
+    protected schoolCode: any;
+    protected schoolKind: any;
 
-    constructor() {
+    constructor(name: string, region: string, kind: string) {
+        this.name = name;
+        this.region = region;
+        this.kind = kind;
         this.schoolCode = {
             "서울": "01",
             "부산": "02",
@@ -33,18 +39,18 @@ export class SchoolFinder {
         };
     }
 
-    public async find(name: string, location: string, kind: string) {
-        const result: any[] = (await Axios.get(`https://hcs.eduro.go.kr/school?orgName=${encodeURI(name)}&lctnScCode=${this.schoolCode[location]}&schulCrseScCode=${this.schoolKind[kind]}`, {
+    public async find() {
+        const result: any = (await Axios.get(`https://hcs.eduro.go.kr/school?orgName=${encodeURI(this.name)}&lctnScCode=${this.schoolCode[this.region]}&schulCrseScCode=${this.schoolKind[this.kind]}`, {
             headers: {
                 'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X)\
                     AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
             }
-        })).data.schulList;
+        })).data.schulList[0];
         return result;
     }
 
-    public async getCode(name: string, location: string, kind: string) {
-        const result: string = (await this.find(name, location, kind))[0].orgCode;
-    return result;
+    public async getCode() {
+        const result: string = (await this.find()).orgCode;
+        return result;
     }
 }
