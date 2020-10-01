@@ -18,7 +18,7 @@ export class SelfChecker {
      * @param region - 학교가 있는 지역(광역시, 도 단위)
      * @param kind - 학교 급(초등학교, 중학교, 고등학교, 특수학교)
      * 
-     * @returns {void}
+     * @returns void
      */
     constructor(name: string, birthday: string, school: string, region: string, kind: string) {
         this.url = {
@@ -51,7 +51,7 @@ export class SelfChecker {
         this.kind = kind;
     }
 
-    private encrypt(str: string) {
+    private encrypt(str: string): string {
         const pem: string = `-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA81dCnCKt0NVH7j5Oh2+S
 GgEU0aqi5u6sYXemouJWXOlZO3jqDsHYM1qfEjVvCOmeoMNFXYSXdNhflU7mjWP8
@@ -73,12 +73,12 @@ tQIDAQAB
         return result;
     }
 
-    private async getSchoolCode() {
+    private async getSchoolCode(): Promise<string> {
         const result: string = (await new SchoolFinder(this.school, this.region, this.kind).getCode());
         return result;
     }
 
-    private async login() {
+    private async login(): Promise<string> {
         const token: string = (await Axios.post(`${this.url[this.region]}${this.url.path[0]}`, {
             "orgcode": await this.getSchoolCode(),
             "name": this.encrypt(Buffer.from(this.name).toString("binary")),
@@ -105,10 +105,11 @@ tQIDAQAB
     }
 
     /**
-     * @returns {string} - time
+     * @returns time
      */
-    public async check() {
-        const result = (await Axios.post(`${this.url[this.region]}${this.url.path[1]}`, {
+    public async check(): Promise<string> {
+        const token: string = await this.login();
+        const result: string = (await Axios.post(`${this.url[this.region]}${this.url.path[1]}`, {
             "rspns01": "1",
             "rspns02": "1",
             "rspns03": null,
@@ -125,13 +126,15 @@ tQIDAQAB
             "rspns14": null,
             "rspns15": null,
             "rspns00": "Y",
-            "deviceuuid": ""
+            "deviceuuid": "",
+            "upperToken": token,
+            "upperUserNameEncpt": this.name
         }, {
             headers: {
                 "Accept": "application/json, text/plain, */*",
                 "Accept-Encoding": "gzip, deflate, br",
                 "Accept-Language": "en-GB,en;q=0.9,ko-KR;q=0.8,ko;q=0.7,ja-JP;q=0.6,ja;q=0.5,zh-TW;q=0.4,zh;q=0.3,en-US;q=0.2",
-                "Authorization": await this.login(),
+                "Authorization": token,
                 "Cache-Control": "no-cache",
                 "Connection": "keep-alive",
                 "Content-type": "application/json; Charset=UTF-8",
