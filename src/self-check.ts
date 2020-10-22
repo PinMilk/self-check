@@ -1,6 +1,6 @@
 import * as Forge from "node-forge";
 import { SchoolFinder } from "./searchSchool";
-import Axios from "axios";
+import Axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 
 export class SelfChecker {
     protected url: any;
@@ -9,7 +9,6 @@ export class SelfChecker {
     protected school: string;
     protected region: string;
     protected kind: string;
-
     /**
      * 
      * @param name - 이름(주민등록상의 이름)
@@ -72,44 +71,62 @@ tQIDAQAB
         const result: string = Buffer.from(publicKey.encrypt(str, "RSAES-PKCS1-V1_5"), "ascii").toString("base64");
         return result;
     }
-
+    /**
+     * 
+     * @returns school code
+     */
     private async getSchoolCode(): Promise<string> {
         const result: string = (await new SchoolFinder(this.school, this.region, this.kind).getCode());
         return result;
     }
-
+    /**
+     * 
+     * @param url url string
+     * @param data request data
+     * @param config request config
+     */
+    private async request(url: string, data: any, config: AxiosRequestConfig): Promise<AxiosResponse<any>> {
+        return await Axios.post(url, data, config);
+    }
+    /**
+     * 
+     * @returns token
+     */
     private async login(): Promise<string> {
-        const token: string = (await Axios.post(`${this.url[this.region]}${this.url.path[0]}`, {
+        const url: string = this.url[this.region] + this.url.path[0];
+        const data: any = {
             "orgcode": await this.getSchoolCode(),
             "name": this.encrypt(Buffer.from(this.name).toString("binary")),
             "birthday": this.encrypt(this.birthday)
-        }, {
-            headers: {
-                "Accept": "application/json, text/plain, */*",
-                "Accept-Encoding": "gzip, deflate, br",
-                "Accept-Language": "en-GB,en;q=0.9,ko-KR;q=0.8,ko;q=0.7,ja-JP;q=0.6,ja;q=0.5,zh-TW;q=0.4,zh;q=0.3,en-US;q=0.2",
-                "Cache-Control": "no-cache",
-                "Connection": "keep-alive",
-                "Content-type": "application/json; Charset=UTF-8",
-                "Origin": "https://hcs.eduro.go.kr",
-                "Pragma": "no-cache",
-                "Referer": "https://hcs.eduro.go.kr/",
-                "Sec-Fetch-Dest": "empty",
-                "Sec-Fetch-Mode": "cors",
-                "Sec-Fetch-Site": "same-site",
-                "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X)\
-                        AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
-            }
-        })).data.token;
+        };
+        const headers: any = {
+            "Accept": "application/json, text/plain, */*",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Accept-Language": "en-GB,en;q=0.9,ko-KR;q=0.8,ko;q=0.7,ja-JP;q=0.6,ja;q=0.5,zh-TW;q=0.4,zh;q=0.3,en-US;q=0.2",
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "Content-type": "application/json; Charset=UTF-8",
+            "Origin": "https://hcs.eduro.go.kr",
+            "Pragma": "no-cache",
+            "Referer": "https://hcs.eduro.go.kr/",
+            "Sec-Fetch-Dest": "empty",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Site": "same-site",
+            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X)\
+                    AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
+        };
+        const response: AxiosResponse = await this.request(url, data, { headers });
+        const document: any = response.data;
+        const token: string = document.token;
         return token;
     }
-
     /**
      * @returns time
      */
     public async check(): Promise<string> {
         const token: string = await this.login();
-        const result: string = (await Axios.post(`${this.url[this.region]}${this.url.path[1]}`, {
+        const url: string = this.url[this.region] + this.url.path[1];
+        const data: any = {
             "rspns01": "1",
             "rspns02": "1",
             "rspns03": null,
@@ -129,25 +146,27 @@ tQIDAQAB
             "deviceuuid": "",
             "upperToken": token,
             "upperUserNameEncpt": this.name
-        }, {
-            headers: {
-                "Accept": "application/json, text/plain, */*",
-                "Accept-Encoding": "gzip, deflate, br",
-                "Accept-Language": "en-GB,en;q=0.9,ko-KR;q=0.8,ko;q=0.7,ja-JP;q=0.6,ja;q=0.5,zh-TW;q=0.4,zh;q=0.3,en-US;q=0.2",
-                "Authorization": token,
-                "Cache-Control": "no-cache",
-                "Connection": "keep-alive",
-                "Content-type": "application/json; Charset=UTF-8",
-                "Origin": "https://hcs.eduro.go.kr",
-                "Pragma": "no-cache",
-                "Referer": "https://hcs.eduro.go.kr/",
-                "Sec-Fetch-Dest": "empty",
-                "Sec-Fetch-Mode": "cors",
-                "Sec-Fetch-Site": "same-site",
-                "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X)\
-                    AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
-            }
-        })).data.inveYmd;
-        return result;
+        };
+        const headers: any = {
+            "Accept": "application/json, text/plain, */*",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Accept-Language": "en-GB,en;q=0.9,ko-KR;q=0.8,ko;q=0.7,ja-JP;q=0.6,ja;q=0.5,zh-TW;q=0.4,zh;q=0.3,en-US;q=0.2",
+            "Authorization": token,
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "Content-type": "application/json; Charset=UTF-8",
+            "Origin": "https://hcs.eduro.go.kr",
+            "Pragma": "no-cache",
+            "Referer": "https://hcs.eduro.go.kr/",
+            "Sec-Fetch-Dest": "empty",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Site": "same-site",
+            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X)\
+                AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
+        };
+        const response: AxiosResponse = await this.request(url, data, { headers });
+        const document: any = response.data;
+        const time: string = document.inveYmd;
+        return time;
     }
 }
