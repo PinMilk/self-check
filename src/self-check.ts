@@ -9,6 +9,7 @@ export class SelfChecker {
     protected school: string;
     protected region: string;
     protected kind: string;
+    protected schoolCode: string;
     /**
      * 
      * @param name - 이름(주민등록상의 이름)
@@ -16,10 +17,11 @@ export class SelfChecker {
      * @param school - 학교명(재학중인 학교)
      * @param region - 학교가 있는 지역(광역시, 도 단위)
      * @param kind - 학교 급(초등학교, 중학교, 고등학교, 특수학교)
+     * @param schoolCode - 학교 코드
      * 
      * @returns void
      */
-    constructor(name: string, birthday: string, school: string, region: string, kind: string) {
+    constructor(name: string, birthday: string, school: string, region: string, kind: string, schoolCode: string = '') {
         this.url = {
             "서울": "https://senhcs.eduro.go.kr",
             "부산": "https://penhcs.eduro.go.kr",
@@ -48,6 +50,7 @@ export class SelfChecker {
         this.school = school;
         this.region = region;
         this.kind = kind;
+        this.schoolCode = schoolCode;
     }
 
     private encrypt(str: string): string {
@@ -76,8 +79,7 @@ tQIDAQAB
      * @returns school code
      */
     private async getSchoolCode(): Promise<string> {
-        const result: string = (await new SchoolFinder(this.school, this.region, this.kind).getCode());
-        return result;
+        return (this.schoolCode ? this.schoolCode : await new SchoolFinder(this.school, this.region, this.kind).getCode());
     }
     /**
      * 

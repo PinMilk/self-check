@@ -69,6 +69,7 @@ tsc
 | `school` | 학교 이름 또는 검색 키워드 | string | Y |
 | `region` | 지역명(이하 상세) | string | Y |
 | `kind` | 학교급(이하 상세) | string | Y |
+| `schoolCode` | 학교 코드 | string | N |
 
 ### 1. 지역명
 | 값 | 지역 |
