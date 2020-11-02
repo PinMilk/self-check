@@ -43,7 +43,7 @@ export class SelfChecker {
      * 
      * @returns void
      */
-    constructor(name: string, birthday: string, school: string, region: string, kind: string, schoolCode: string = '') {
+    constructor(name: string, birthday: string, school: string, region: string, kind: string = '', schoolCode: string = '') {
         this.name = name;
         this.birthday = birthday;
         this.school = school;
@@ -159,7 +159,7 @@ export class SelfChecker {
             "Sec-Fetch-Mode": "cors",
             "Sec-Fetch-Site": "same-site",
             "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X)\
-                AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
+                    AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
         };
         const response: AxiosResponse = await this.request(url, data, { headers });
         const document: any = response.data;
