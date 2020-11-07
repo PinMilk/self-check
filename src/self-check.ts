@@ -22,7 +22,7 @@ export class SelfChecker {
         "경남": "https://gnehcs.eduro.go.kr",
         "제주": "https://jjehcs.eduro.go.kr",
         "path": [
-            "/loginwithschool",
+            "/v2/findUser",
             "/registerServey"
         ]
     };
@@ -92,9 +92,11 @@ export class SelfChecker {
     private async getToken(): Promise<string> {
         const url: string = this.url[this.region] + this.url.path[0];
         const data: any = {
-            "orgcode": await this.getSchoolCode(),
+            "orgCode": await this.getSchoolCode(),
             "name": this.encrypt(Buffer.from(this.name).toString("binary")),
-            "birthday": this.encrypt(this.birthday)
+            "birthday": this.encrypt(this.birthday),
+            "stdntPNo": null,
+            "loginType":"school"
         };
         const headers: any = {
             "Accept": "application/json, text/plain, */*",
