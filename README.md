@@ -2,8 +2,9 @@
 [![TypeScript](https://img.shields.io/badge/Built%20with-Typescript-informational?logo=typescript)](https://www.typescriptlang.org/)
 [![Passed](https://img.shields.io/badge/Build-Passed-success)](#)
 [![License](https://img.shields.io/github/license/pinmilk/self-check)](./LICENSE)
-- Note: It can stop working anytime.
-- 전달: 이 프로그램은 언제든지 작동을 멈출 수 있습니다.
+- Note: It can stop working anytime.<br />
+      Before using this app, please check the condition of you and run this app.
+- 전달: 이 프로그램은 언제든지 작동을 멈출 수 있습니다.<br />
       이 앱을 사용하기 전, 반드시 자신의 건강 상태를 확인하고 실행해 주세요.
 ## 만들게 된 이유!
 <img alt="result" src="./img/귀찮아.jpg" />
@@ -24,34 +25,12 @@ example.ts에 있는 것처럼 코드를 짭니다.
 아래는 example.ts의 내용입니다.
 ```typescript
 import { SelfChecker } from "./"; // 디렉토리 설정은 알아서.
-import * as FS from "fs";
-
-const example: any = JSON.parse(FS.readFileSync("./example.json", {
-    encoding: "utf-8"
-}));
-
-// 파일을 읽어옴
-new SelfChecker(example.name /* 이름 */, example.birthday /* 생년월일(6자리) */, example.school /* 학교 이름 키워드 */, example.region /* 지역 */, example.kind /* 학교급 */)
-    .check()
-    .then(res => console.log(res))
-    .catch(e => console.error(e));
 
 // 일반적인 처리
 new SelfChecker('조한별' /* 이름 */, '040114' /* 생년월일(6자리) */, '평택기' /* 학교 이름 키워드 */, '경기' /* 지역 */, '고등학교' /* 학교급 */)
     .check()
     .then(res => console.log(res))
     .catch(e => console.error(e));
-```
-또한 위의 예시처럼 파일을 읽어와 처리할 수도 있습니다.
-아래는 example.json의 내용입니다.
-```json
-{
-    "name": "조한별",
-    "birthday": "040114",
-    "school": "평택기",
-    "region": "경기",
-    "kind": "고등학교"
-}
 ```
 
 ### 3. TypeScript 빌드
