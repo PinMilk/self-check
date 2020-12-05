@@ -59,8 +59,7 @@ class SchoolFinder {
     public async find(): Promise<SchoolInfo> {
         const url: string = `https://hcs.eduro.go.kr/v2/searchSchool?lctnScCode=${this.schoolCode[this.region]}${this.schoolKind[this.kind] ? '&schulCrseScCode=' + this.schoolKind[this.kind] : ''}&orgName=${encodeURI(this.name)}`;
         const headers: any = {
-            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X)\
-                    AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
+            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
         };
         const response: AxiosResponse = await this.request(url, { headers });
         const document: any = response.data;
@@ -101,5 +100,3 @@ export {
     SchoolFinder,
     SchoolInfo
 }
-
-new SchoolFinder('평택기', '경기', '고등학교').find().then(res => console.log(res)).catch(e => console.log(e))
