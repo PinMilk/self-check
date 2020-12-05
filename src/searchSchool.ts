@@ -1,6 +1,9 @@
-import Axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
+import Axios, {
+    AxiosResponse,
+    AxiosRequestConfig
+} from 'axios';
 
-export class SchoolFinder {
+class SchoolFinder {
     protected name: string;
     protected region: string;
     protected kind: string;
@@ -46,11 +49,14 @@ export class SchoolFinder {
      * @param url request url
      * @param config request config
      */
-    private async request(url: string, config: AxiosRequestConfig): Promise<AxiosResponse<any>> {
+    private async request(url: string, config: AxiosRequestConfig): Promise<AxiosResponse> {
         return await Axios.get(url, config);
     }
-    /** */
-    public async find() {
+    /**
+     * 
+     * @returns School info
+     */
+    public async find(): Promise<SchoolInfo> {
         const url: string = `https://hcs.eduro.go.kr/v2/searchSchool?lctnScCode=${this.schoolCode[this.region]}${this.schoolKind[this.kind] ? '&schulCrseScCode=' + this.schoolKind[this.kind] : ''}&orgName=${encodeURI(this.name)}`;
         const headers: any = {
             'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X)\
@@ -61,9 +67,39 @@ export class SchoolFinder {
         const result: any = document.schulList[0];
         return result;
     }
-    /** */
+    /**
+     * 
+     * @returns School code
+     */
     public async getCode(): Promise<string> {
         const schoolCode: string = (await this.find()).orgCode;
         return schoolCode;
     }
 }
+
+interface SchoolInfo {
+    orgCode: string;
+    kraOrgNm: string;
+    engOrgNm: string;
+    insttClsfCode: string;
+    lctnScCode: string;
+    lctnScNm: string;
+    sigCode: string;
+    juOrgCode: string;
+    schulKndScCode: string;
+    orgAbrvNm01: string;
+    orgAbrvNm02: string;
+    endYmd: string;
+    orgUon: string;
+    updid: string;
+    mdfcDtm: string;
+    atptOfcdcConctUrl: string;
+    addres: string;
+}
+
+export {
+    SchoolFinder,
+    SchoolInfo
+}
+
+new SchoolFinder('평택기', '경기', '고등학교').find().then(res => console.log(res)).catch(e => console.log(e))

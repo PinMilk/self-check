@@ -4,3 +4,4 @@ package-lock.json
 auto-self-check.*
 auto-self-check
 credentials.json
+*.old.*
