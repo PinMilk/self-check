@@ -26,6 +26,7 @@ class SelfChecker {
         '제주': 'https://jjehcs.eduro.go.kr',
         'path': [
             '/v2/findUser',
+            '/v2/validatePassword',
             '/v2/selectUserGroup',
             '/v2/getUserInfo',
             '/registerServey'
@@ -36,6 +37,7 @@ class SelfChecker {
     protected school: string;
     protected region: string;
     protected kind: string;
+    protected password: string;
     protected schoolCode: string;
     protected userPNo: string = '';
     protected hostURI: string;
@@ -46,15 +48,17 @@ class SelfChecker {
      * @param school - 학교명(재학중인 학교)
      * @param region - 학교가 있는 지역(광역시, 도 단위)
      * @param kind - 학교 급(초등학교, 중학교, 고등학교, 특수학교)
+     * @param password - 자가진단 비밀번호(4자리 숫자)
      * @param schoolCode - 학교 코드
      * @constructor
      */
-    constructor(name: string, birthday: string, school: string, region: string, kind: string = '', schoolCode: string = '') {
+    constructor(name: string, birthday: string, school: string, region: string, kind: string = '', password: string = '1234', schoolCode: string = '') {
         this.name = name;
         this.birthday = birthday;
         this.school = school;
         this.region = region;
         this.kind = kind;
+        this.password = password;
         this.schoolCode = schoolCode;
         this.hostURI = this.url[region];
         return this;
@@ -84,7 +88,7 @@ class SelfChecker {
      * @private
      */
     private async getSchoolCode(): Promise<SelfChecker> {
-        this.schoolCode = this.schoolCode || await new SchoolFinder(this.school, this.region, this.kind).getCode()// this.schoolCode ? this.schoolCode : await new SchoolFinder(this.school, this.region, this.kind).getCode();
+        this.schoolCode = this.schoolCode || await new SchoolFinder(this.school, this.region, this.kind).getCode();
         return this;
     }
     /**
@@ -99,36 +103,24 @@ class SelfChecker {
     /**
      * 
      * @returns token
+     * @private
      */
     private async getFirstToken(): Promise<string> {
-        const name: string = this.name;
-        const birthday: string = this.birthday;
-
         const url: string = this.url[this.region] + this.url.path[0];
         await this.getSchoolCode();
 
         const config: AxiosRequestConfig = {
             headers: {
-                'Accept': 'application/json, text/plain, */*',
-                'Accept-Encoding': 'gzip, deflate, br',
-                'Accept-Language': 'en-GB,en;q=0.9,ko-KR;q=0.8,ko;q=0.7,ja-JP;q=0.6,ja;q=0.5,zh-TW;q=0.4,zh;q=0.3,en-US;q=0.2',
-                'Cache-Control': 'no-cache',
-                'Connection': 'keep-alive',
                 'Content-type': 'application/json; Charset=UTF-8',
                 'Origin': 'https://hcs.eduro.go.kr',
-                'Pragma': 'no-cache',
                 'Referer': 'https://hcs.eduro.go.kr/',
-                'Sec-Fetch-Dest': 'empty',
-                'Sec-Fetch-Mode': 'cors',
-                'Sec-Fetch-Site': 'same-site',
-                'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
-                'X-Requested-With': 'XMLHttpRequest'
+                'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
             }
         };
         const data: any = {
             'orgCode': this.schoolCode,
-            'name': this.encrypt(Buffer.from(name).toString('binary')),
-            'birthday': this.encrypt(birthday),
+            'name': this.encrypt(Buffer.from(this.name).toString('binary')),
+            'birthday': this.encrypt(this.birthday),
             'stdntPNo': null,
             'loginType': 'school'
         };
@@ -138,9 +130,39 @@ class SelfChecker {
         const token: string = document.token;
         return token;
     }
+    /**
+     * 
+     * @returns token
+     * @private
+     */
     private async getSecondToken(): Promise<string> {
         const requestToken: string = await this.getFirstToken();
         const url: string = this.url[this.region] + this.url.path[1];
+        const config: AxiosRequestConfig = {
+            headers: {
+                'Authorization': requestToken,
+                'Content-type': 'application/json; Charset=UTF-8',
+                'Origin': 'https://hcs.eduro.go.kr',
+                'Referer': 'https://hcs.eduro.go.kr/',
+                'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
+            }
+        };
+        const data: any = {
+            'password': this.encrypt(this.password),
+            'deviceUuid': ''
+        };
+        const response: AxiosResponse = await this.request(url, data, config);
+        const document: any = response.data;
+        return document;
+    }
+    /**
+     * 
+     * @returns token
+     * @private
+     */
+    public async getThirdToken(): Promise<string> {
+        const requestToken: string = await this.getSecondToken();
+        const url: string = this.url[this.region] + this.url.path[2];
         const config: AxiosRequestConfig = {
             headers: {
                 'Authorization': requestToken,
@@ -156,25 +178,9 @@ class SelfChecker {
         const token: string = document[0].token;
         return token;
     }
-    private async getThirdToken(): Promise<string> {
-        const requestToken: string = await this.getSecondToken();
-        const url: string = this.url[this.region] + this.url.path[2];
-        const config: AxiosRequestConfig = {
-            headers: {
-                'Authorization': requestToken,
-                'Content-type': 'application/json; Charset=UTF-8',
-                'Origin': 'https://hcs.eduro.go.kr',
-                'Referer': 'https://hcs.eduro.go.kr/',
-                'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
-            }
-        };
-        const response: AxiosResponse = await this.request(url, {}, config);
-        const document: any = response.data;
-        const token: string = document.token;
-        return token;
-    }
     /**
-     * @returns time
+     * 
+     * @returns Check response
      */
     public async check(): Promise<CheckResponse> {
         const token: string = await this.getThirdToken();
@@ -186,15 +192,16 @@ class SelfChecker {
         const kind: string = this.kind;
         const schoolCode: string = this.schoolCode;
 
-        const url: string = this.url[this.region] + this.url.path[3];
-        const headers: any = {
-            'Authorization': token,
-            'Content-type': 'application/json; Charset=UTF-8',
-            'Origin': 'https://hcs.eduro.go.kr',
-            'Referer': 'https://hcs.eduro.go.kr/',
-            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
+        const url: string = this.url[this.region] + this.url.path[4];
+        const config: AxiosRequestConfig = {
+            headers: {
+                'Authorization': token,
+                'Content-type': 'application/json; Charset=UTF-8',
+                'Origin': 'https://hcs.eduro.go.kr',
+                'Referer': 'https://hcs.eduro.go.kr/',
+                'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
+            }
         };
-        const config: AxiosRequestConfig = { headers };
         const data: any = {
             'rspns01': '1',
             'rspns02': '1',
