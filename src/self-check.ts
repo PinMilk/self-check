@@ -256,5 +256,6 @@ interface CheckResponse extends CheckInfo {
 export {
     SelfChecker,
     SchoolFinder,
-    CheckInfo
+    CheckInfo,
+    CheckResponse
 }
