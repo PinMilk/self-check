@@ -27,7 +27,7 @@ example.ts에 있는 것처럼 코드를 짭니다.
 import { SelfChecker } from "./"; // 디렉토리 설정은 알아서.
 
 // 일반적인 처리
-new SelfChecker('조한별' /* 이름 */, '040114' /* 생년월일(6자리) */, '평택기' /* 학교 이름 키워드 */, '경기' /* 지역 */, '고등학교' /* 학교급 */)
+new SelfChecker('이름' /* 이름 */, '******' /* 생년월일(6자리) */, 'XX고' /* 학교 이름 키워드 */, '경기' /* 지역 */, '고등학교' /* 학교급 */)
     .check()
     .then(res => console.log(res))
     .catch(e => console.error(e));
