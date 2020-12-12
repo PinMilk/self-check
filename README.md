@@ -15,24 +15,22 @@
 ## 사용법
 
 ### 1. 저장소 복제
+아래 명령어로 self-check 레포를 클론합니다.
 ```bash
 git clone https://github.com/PinMilk/self-check
 ```
-위 명령어로 self-check 레포를 클론합니다.
-
 ### 2. 코드 짜기
-example.ts에 있는 것처럼 코드를 짭니다.
-아래는 example.ts의 내용입니다.
+아래와 같이 코딩합니다.
+예시입니다.
 ```typescript
 import { SelfChecker } from "./"; // 디렉토리 설정은 알아서.
 
 // 일반적인 처리
-new SelfChecker('이름' /* 이름 */, '******' /* 생년월일(6자리) */, 'XX고' /* 학교 이름 키워드 */, '경기' /* 지역 */, '고등학교' /* 학교급 */)
+new SelfChecker('이름' /* 이름 */, '******' /* 생년월일(6자리) */, 'XX고' /* 학교 이름 키워드 */, '경기' /* 지역 */, '고등학교' /* 학교급 */, '1234' /* 비밀번호 */)
     .check()
     .then(res => console.log(res))
     .catch(e => console.error(e));
 ```
-
 ### 3. TypeScript 빌드
 이 레포가 있는 디렉토리에서 아래 명령어로 타입스크립트를 빌드해줍니다!
 ```bash
@@ -50,7 +48,6 @@ tsc
 | `kind` | 학교급(이하 상세) | string | N |
 | `password` | 비밀번호 | string | Y |
 | `schoolCode` | 학교 코드 | string | N |
-
 ### 1. 지역명
 | 값 | 지역 |
 | -- | ---- |
@@ -71,7 +68,6 @@ tsc
 | `경북` | 경상북도 |
 | `경남` | 경상남도 |
 | `제주` | 제주특별자치도 |
-
 ### 2. 학교급
 `유치원, 초등학교, 중학교, 고등학교, 특수학교` 중 선택
 ## License
