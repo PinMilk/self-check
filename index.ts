@@ -1,1 +1,6 @@
-export { SelfChecker } from "./src/self-check";
+export {
+    SelfChecker,
+    SchoolFinder,
+    CheckInfo,
+    CheckResponse
+} from "./src/self-check";
