@@ -23,7 +23,9 @@ git clone https://github.com/PinMilk/self-check
 아래와 같이 코딩합니다.
 예시입니다.
 ```typescript
-import { SelfChecker } from "./"; // 디렉토리 설정은 알아서.
+import SelfChecker, {
+    CheckResponse
+} from './'; // 디렉토리 설정은 알아서.
 
 // 일반적인 처리
 new SelfChecker('이름' /* 이름 */, '******' /* 생년월일(6자리) */, 'XX고' /* 학교 이름 키워드 */, '경기' /* 지역 */, '고등학교' /* 학교급 */, '1234' /* 비밀번호 */)
