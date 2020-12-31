@@ -5,3 +5,4 @@ auto-self-check.*
 auto-self-check
 credentials.json
 *.old.*
+node_modules/*
