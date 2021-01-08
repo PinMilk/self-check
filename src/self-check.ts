@@ -6,7 +6,7 @@ import Axios, {
 } from 'axios';
 
 class SelfChecker {
-    protected url: any = {
+    private url: any = {
         '서울': 'https://senhcs.eduro.go.kr',
         '부산': 'https://penhcs.eduro.go.kr',
         '대구': 'https://dgehcs.eduro.go.kr',
@@ -32,15 +32,15 @@ class SelfChecker {
             '/registerServey'
         ]
     };
-    protected name: string;
-    protected birthday: string;
-    protected school: string;
-    protected region: string;
-    protected kind: string;
-    protected password: string;
-    protected schoolCode: string;
-    protected userPNo: string = '';
-    protected hostURI: string;
+    private name: string;
+    private birthday: string;
+    private school: string;
+    private region: string;
+    private kind: string;
+    private password: string;
+    private schoolCode: string;
+    private userPNo: string = '';
+    private hostURI: string;
     /**
      * 
      * @param name - 이름(주민등록상의 이름)

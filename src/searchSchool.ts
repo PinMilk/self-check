@@ -4,10 +4,10 @@ import Axios, {
 } from 'axios';
 
 class SchoolFinder {
-    protected name: string;
-    protected region: string;
-    protected kind: string;
-    protected schoolCode: any = {
+    private name: string;
+    private region: string;
+    private kind: string;
+    private schoolCode: any = {
         "서울": "01",
         "부산": "02",
         "대구": "03",
@@ -26,7 +26,7 @@ class SchoolFinder {
         "경남": "17",
         "제주": "18"
     };
-    protected schoolKind: any = {
+    private schoolKind: any = {
         "유치원": "1",
         "초등학교": "2",
         "중학교": "3",
