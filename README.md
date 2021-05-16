@@ -28,8 +28,14 @@ import SelfChecker, {
 } from './'; // 디렉토리 설정은 알아서.
 
 // 일반적인 처리
-new SelfChecker('이름' /* 이름 */, '******' /* 생년월일(6자리) */, 'XX고' /* 학교 이름 키워드 */, '경기' /* 지역 */, '고등학교' /* 학교급 */, '1234' /* 비밀번호 */)
-    .check()
+new SelfChecker({
+    name: '이름',
+    birthday: '******', // 생년월일(6자리)
+    school: '**학교',
+    region: '지역(아래 참고)',
+    kind: '학교 급(아래 참고)',
+    password: '패스워드(4자리)'
+}).check()
     .then(res => console.log(res))
     .catch(e => console.error(e));
 ```
@@ -40,8 +46,8 @@ tsc
 ```
 ### 4. Enjoy
 귀찮은 자가진단을 자동으로 할 수 있습니다!
-## Parameter
-| 파라미터 | 설명 | 타입 | 필수 여부 |
+## Config
+| 키 | 설명 | 타입 | 필수 여부 |
 | -------- | ---- | ---- | --------- |
 | `name` | 학생의 이름 | string | Y |
 | `birthday` | 학생의 생일(6자리) | string | Y |
