@@ -1,5 +1,8 @@
 import * as Forge from 'node-forge';
-import { SchoolFinder } from './searchSchool';
+import {
+    SchoolFinder,
+    SearchConfig
+} from './searchSchool';
 import Axios, {
     AxiosRequestConfig,
     AxiosResponse
@@ -52,15 +55,15 @@ class SelfChecker {
      * @param schoolCode - 학교 코드
      * @constructor
      */
-    constructor(name: string, birthday: string, school: string, region: string, kind: string = '', password: string = '1234', schoolCode: string = '') {
-        this.name = name;
-        this.birthday = birthday;
-        this.school = school;
-        this.region = region;
-        this.kind = kind;
-        this.password = password;
-        this.schoolCode = schoolCode;
-        this.hostURI = this.url[region];
+    constructor(config: CheckConfig) {
+        this.name = config.name;
+        this.birthday = config.birthday;
+        this.school = config.school;
+        this.region = config.region;
+        this.kind = config.kind || '';
+        this.password = config.password;
+        this.schoolCode = config.schoolCode || '';
+        this.hostURI = this.url[config.region];
         return this;
     }
     /**
@@ -88,7 +91,12 @@ class SelfChecker {
      * @private
      */
     private async getSchoolCode(): Promise<SelfChecker> {
-        this.schoolCode = this.schoolCode || await new SchoolFinder(this.school, this.region, this.kind).getCode();
+        const config: SearchConfig = {
+            name: this.school,
+            region: this.region,
+            kind: this.kind
+        };
+        this.schoolCode = this.schoolCode || await new SchoolFinder(config).getCode();
         return this;
     }
     /**
@@ -245,7 +253,7 @@ interface CheckInfo {
     birthday: string;
     school: string;
     region: string;
-    kind: string;
+    kind?: string;
     schoolCode?: string;
 }
 
@@ -253,9 +261,14 @@ interface CheckResponse extends CheckInfo {
     checkTime: string;
 }
 
+interface CheckConfig extends CheckInfo{
+    password: string;
+}
+
 export {
     SelfChecker,
     SchoolFinder,
     CheckInfo,
-    CheckResponse
+    CheckResponse,
+    CheckConfig
 }

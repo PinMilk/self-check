@@ -6,7 +6,7 @@ import Axios, {
 class SchoolFinder {
     private name: string;
     private region: string;
-    private kind: string;
+    private kind: string = '';
     private schoolCode: any = {
         "서울": "01",
         "부산": "02",
@@ -39,10 +39,10 @@ class SchoolFinder {
      * @param region School region
      * @param kind School kind
      */
-    constructor(name: string, region: string, kind: string) {
-        this.name = name;
-        this.region = region;
-        this.kind = kind;
+    constructor(config: SearchConfig) {
+        this.name = config.name;
+        this.region = config.region;
+        this.kind = config.kind || '';
     }
     /**
      * 
@@ -76,6 +76,12 @@ class SchoolFinder {
     }
 }
 
+interface SearchConfig {
+    name: string;
+    region: string;
+    kind?: string;
+}
+
 interface SchoolInfo {
     orgCode: string;
     kraOrgNm: string;
@@ -98,5 +104,6 @@ interface SchoolInfo {
 
 export {
     SchoolFinder,
+    SearchConfig,
     SchoolInfo
 }
